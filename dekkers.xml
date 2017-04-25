@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+bool wants_to_enter[2] := {false, false};
+bool turn := 0; // 0 or 1, indicates who's turn it is</declaration>
+	<template>
+		<name x="5" y="5">Process</name>
+		<parameter>bool me</parameter>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-3859" y="-2422">
+		</location>
+		<location id="id1" x="-3570" y="-2422">
+			<name x="-3604" y="-2396">CONFLICT</name>
+		</location>
+		<location id="id2" x="-3859" y="-2771">
+		</location>
+		<location id="id3" x="-3859" y="-2610">
+			<name x="-3944" y="-2618">CRITICAL</name>
+		</location>
+		<location id="id4" x="-3570" y="-2610">
+		</location>
+		<location id="id5" x="-3570" y="-2771">
+			<name x="-3580" y="-2805">start</name>
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-3944" y="-2516">wants_to_enter[me] := true</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-3264" y="-2550">turn != me</label>
+			<label kind="comments" x="-3264" y="-2524">Not my turn</label>
+			<nail x="-3272" y="-2422"/>
+			<nail x="-3272" y="-2609"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-3553" y="-2550">wants_to_enter[!me]</label>
+			<label kind="comments" x="-3553" y="-2524">We both want to enter CRITICAL</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-4003" y="-2421">turn != me</label>
+			<label kind="comments" x="-4046" y="-2396">waiting my turn</label>
+			<nail x="-3859" y="-2354"/>
+			<nail x="-3927" y="-2354"/>
+			<nail x="-3927" y="-2422"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-3765" y="-2448">turn == me</label>
+			<label kind="assignment" x="-3799" y="-2414">wants_to_enter[me] := false</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-3799" y="-2771">wants_to_enter[me] := false</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="-3944" y="-2695">turn := !me</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-3791" y="-2635">!wants_to_enter[!me]</label>
+			<label kind="comments" x="-3808" y="-2601">Other process says no prob</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-3561" y="-2703">wants_to_enter[me] := true</label>
+			<label kind="comments" x="-3562" y="-2678">I want to enter critical</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Process0 = Process(0);
+Process1 = Process(1);
+// List one or more processes to be composed into a system.
+system Process0, Process1;
+    </system>
+	<queries>
+		<query>
+			<formula>A[] !(Process0.CRITICAL &amp;&amp; Process1.CRITICAL)
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>
