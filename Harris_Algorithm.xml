@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+int turn = 0;
+int flag[false,false];
+
+void Template(int me, int you){
+    do{
+        flag[me] = true;
+
+        while (turn != me){
+            while(flag[you]){}
+            turn = me;
+        }
+
+        CriticalSection(me);
+        flag[me] = false;
+        RemainerSection(me);
+
+    }while(true)
+}</declaration>
+	<template>
+		<name x="5" y="5">Harris Hyman's </name>
+		<parameter>int me, int you</parameter>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="-1283" y="-127">
+		</location>
+		<location id="id1" x="-1113" y="-127">
+		</location>
+		<location id="id2" x="-969" y="-212">
+		</location>
+		<location id="id3" x="-943" y="-348">
+		</location>
+		<location id="id4" x="-1291" y="-272">
+		</location>
+		<location id="id5" x="-1096" y="-365">
+		</location>
+		<location id="id6" x="-1291" y="-365">
+		</location>
+		<location id="id7" x="-1453" y="-365" color="#ffc0cb">
+		</location>
+		<init ref="id7"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-1419" y="-314">if true</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="assignment" x="-1427" y="-391">flag[me] = true</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+Process1 = Template(0,1);
+Process2 = Template(1,0);
+// List one or more processes to be composed into a system.
+system Process1, Process2;
+    </system>
+	<queries>
+	</queries>
+</nta>
