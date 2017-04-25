@@ -2,7 +2,7 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
 	<declaration>// Place global declarations here.
-int n = 0;
+int n = 1;
 </declaration>
 	<template>
 		<name x="5" y="5">Process</name>
@@ -12,7 +12,7 @@ int r = 0;</declaration>
 		</location>
 		<location id="id1" x="-136" y="-314">
 		</location>
-		<location id="id2" x="-272" y="-314">
+		<location id="id2" x="-289" y="-314">
 		</location>
 		<location id="id3" x="-425" y="-314">
 		</location>
@@ -20,20 +20,23 @@ int r = 0;</declaration>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id3"/>
-			<nail x="-25" y="-195"/>
+			<nail x="-68" y="-195"/>
 			<nail x="-340" y="-195"/>
 		</transition>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id0"/>
+			<label kind="assignment" x="-85" y="-314">n=r</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id1"/>
+			<label kind="assignment" x="-229" y="-314">r=r+n</label>
 		</transition>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id2"/>
+			<label kind="assignment" x="-365" y="-314">r=n</label>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
@@ -44,5 +47,35 @@ Process2 = Process();
 system Process1, Process2;
 </system>
 	<queries>
+		<query>
+			<formula>E&lt;&gt;n==23
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt;n==9
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt;n==8
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt;n==3
+			</formula>
+			<comment>
+			</comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt;n==2
+			</formula>
+			<comment>
+			</comment>
+		</query>
 	</queries>
 </nta>
