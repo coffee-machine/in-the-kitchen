@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan coffee, coin;
+urgent chan publish;</declaration>
+	<template>
+		<name x="5" y="5">Person</name>
+		<declaration>// Place local declarations here.
+clock personTime;</declaration>
+		<location id="id0" x="153" y="-34">
+			<name x="170" y="-42">GO</name>
+		</location>
+		<location id="id1" x="-127" y="145">
+			<name x="-178" y="161">SECOND_WAIT</name>
+			<label kind="invariant" x="-178" y="178">personTime &lt;= 2</label>
+		</location>
+		<location id="id2" x="-127" y="8">
+			<name x="-110" y="-1">READY</name>
+		</location>
+		<location id="id3" x="-127" y="-136">
+			<name x="-102" y="-144">FIRST_WAIT</name>
+			<label kind="invariant" x="-102" y="-127">personTime &lt;= 3</label>
+		</location>
+		<location id="id4" x="-127" y="-289">
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="161" y="-178">publish!</label>
+			<nail x="153" y="-289"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-42" y="119">personTime == 2</label>
+			<nail x="153" y="145"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-187" y="51">coffee?</label>
+			<label kind="assignment" x="-119" y="51">personTime := 0</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-263" y="-85">personTime == 3</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-170" y="-229">coin!</label>
+			<label kind="assignment" x="-119" y="-229">personTime := 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>CoffeeMachine</name>
+		<declaration>clock brewingTime;</declaration>
+		<location id="id5" x="-748" y="-280">
+		</location>
+		<location id="id6" x="-986" y="-280">
+			<name x="-1020" y="-263">BREWING</name>
+			<label kind="invariant" x="-1045" y="-246">brewingTime &lt;= 3</label>
+		</location>
+		<location id="id7" x="-986" y="-442">
+		</location>
+		<init ref="id7"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id7"/>
+			<nail x="-748" y="-442"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-935" y="-272">brewingTime &gt;= 1</label>
+			<label kind="synchronisation" x="-901" y="-306">coffee!</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-1028" y="-374">coin?</label>
+			<label kind="assignment" x="-977" y="-374">brewingTime := 0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Observer</name>
+		<declaration>clock observerTime;</declaration>
+		<location id="id8" x="-331" y="-187" color="#00ff00">
+			<name x="-348" y="-170">HAPPY</name>
+		</location>
+		<location id="id9" x="-331" y="-408" color="#ff0000">
+			<name x="-348" y="-442">SAD</name>
+		</location>
+		<location id="id10" x="-331" y="-297">
+		</location>
+		<location id="id11" x="-544" y="-297">
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id11"/>
+			<label kind="assignment" x="-501" y="-187">observerTime := 0</label>
+			<nail x="-544" y="-187"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="assignment" x="-493" y="-408">observerTime := 0</label>
+			<nail x="-544" y="-408"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-314" y="-255">observerTime &lt;= 8</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-314" y="-365">observerTime &gt; 8</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-467" y="-323">publish?</label>
+			<label kind="assignment" x="-493" y="-297">observerTime := 0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+// List one or more processes to be composed into a system.
+system Person, CoffeeMachine, Observer;
+    </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; !Observer.SAD
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>
