@@ -3,69 +3,87 @@
 <nta>
 	<declaration>// Place global declarations here.
 int turn = 0;
-int flag[false,false];
-
-void Template(int me, int you){
-    do{
-        flag[me] = true;
-
-        while (turn != me){
-            while(flag[you]){}
-            turn = me;
-        }
-
-        CriticalSection(me);
-        flag[me] = false;
-        RemainerSection(me);
-
-    }while(true)
-}</declaration>
+bool flag[2] := {false, false};</declaration>
 	<template>
-		<name x="5" y="5">Harris Hyman's </name>
+		<name x="5" y="5">Process</name>
 		<parameter>int me, int you</parameter>
 		<declaration>// Place local declarations here.</declaration>
-		<location id="id0" x="-1283" y="-127">
+		<location id="id0" x="-1003" y="-246">
 		</location>
-		<location id="id1" x="-1113" y="-127">
+		<location id="id1" x="-1181" y="-246">
+			<name x="-1215" y="-229">CRITICAL</name>
 		</location>
-		<location id="id2" x="-969" y="-212">
+		<location id="id2" x="-1343" y="-246">
+			<name x="-1385" y="-229">REMAINDER</name>
 		</location>
-		<location id="id3" x="-943" y="-348">
+		<location id="id3" x="-1003" y="-382">
 		</location>
-		<location id="id4" x="-1291" y="-272">
+		<location id="id4" x="-1181" y="-382">
 		</location>
-		<location id="id5" x="-1096" y="-365">
+		<location id="id5" x="-1343" y="-382" color="#ffc0cb">
+			<name x="-1411" y="-391">START</name>
 		</location>
-		<location id="id6" x="-1291" y="-365">
-		</location>
-		<location id="id7" x="-1453" y="-365" color="#ffc0cb">
-		</location>
-		<init ref="id7"/>
+		<init ref="id5"/>
 		<transition>
-			<source ref="id5"/>
-			<target ref="id4"/>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-1122" y="-272">turn := me</label>
 		</transition>
 		<transition>
 			<source ref="id4"/>
-			<target ref="id7"/>
-			<label kind="guard" x="-1419" y="-314">if true</label>
+			<target ref="id1"/>
+			<label kind="guard" x="-1173" y="-323">turn == me</label>
+			<label kind="comments" x="-1173" y="-348">Is my turn</label>
 		</transition>
 		<transition>
-			<source ref="id6"/>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="-1317" y="-272">flag[me] := false</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-935" y="-425">flag[you]</label>
+			<label kind="comments" x="-1011" y="-467">Do nothing</label>
+			<nail x="-1003" y="-442"/>
+			<nail x="-943" y="-442"/>
+			<nail x="-943" y="-382"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-994" y="-323">!flag[you]</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
 			<target ref="id5"/>
+			<label kind="guard" x="-1385" y="-323">true</label>
 		</transition>
 		<transition>
-			<source ref="id7"/>
-			<target ref="id6"/>
-			<label kind="assignment" x="-1427" y="-391">flag[me] = true</label>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-1139" y="-408">turn != me</label>
+			<label kind="comments" x="-1147" y="-433">Not my turn</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-1317" y="-408">flag[me] := true</label>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
-Process1 = Template(0,1);
-Process2 = Template(1,0);
+Process1 = Process(0,1);
+Process2 = Process(1,0);
+
 // List one or more processes to be composed into a system.
 system Process1, Process2;
     </system>
 	<queries>
+		<query>
+			<formula>E&lt;&gt; (Process1.CRITICAL &amp;&amp; Process2.CRITICAL)
+			</formula>
+			<comment>
+			</comment>
+		</query>
 	</queries>
 </nta>
