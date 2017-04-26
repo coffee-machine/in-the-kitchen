@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+int board[7] = {2, 2, 2, 0, 1, 1, 1};
+
+int posOfEmpty = 3;
+
+bool isGameComplete() {
+    if (posOfEmpty == 3) {
+        if (1 == board[0] == board[1] == board[2]) {
+            return true;
+        }   
+    }
+    return false;
+}
+
+bool isJumpLeftLegal() {
+    if (posOfEmpty &gt;= 2) {
+        return true;
+    }
+    return false;
+}    
+
+bool isJumpRightLegal() {
+    if (posOfEmpty &lt;= 4) {
+        return true;
+    }
+    return false;
+}
+
+bool isMoveLeftLegal() {
+    if (posOfEmpty &gt;= 1) {
+        return true;
+    }
+    return false;
+}
+
+bool isMoveRightLegal() {
+    if (posOfEmpty &lt;= 5) {
+        return true;
+    } 
+    return false;
+}
+
+void moveLeft(int howMany) {
+    if (!isGameComplete()) {
+        int blockToBeSwapped = board[posOfEmpty - howMany]; 
+        board[posOfEmpty - howMany] = 0;
+        board[posOfEmpty] = blockToBeSwapped;
+        posOfEmpty = posOfEmpty - howMany;
+    }
+}
+
+void moveRight(int howMany) {
+    if (!isGameComplete()) {
+        int blockToBeSwapped = board[posOfEmpty + howMany];
+        board[posOfEmpty + howMany] = 0;
+        board[posOfEmpty] = blockToBeSwapped;
+        posOfEmpty = posOfEmpty + howMany;
+    }
+}
+</declaration>
+	<template>
+		<name x="5" y="5">Player</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-416" y="-493">
+			<name x="-476" y="-476">GAME_COMPLETE</name>
+		</location>
+		<location id="id1" x="-722" y="-697">
+		</location>
+		<location id="id2" x="-127" y="-697">
+		</location>
+		<location id="id3" x="-577" y="-663">
+		</location>
+		<location id="id4" x="-254" y="-663">
+		</location>
+		<location id="id5" x="-416" y="-663">
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-408" y="-552">isGameComplete()</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-543" y="-740">moveLeft(1)</label>
+			<nail x="-577" y="-740"/>
+			<nail x="-416" y="-740"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-373" y="-740">moveRight(1)</label>
+			<nail x="-254" y="-740"/>
+			<nail x="-416" y="-740"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-297" y="-595">moveRight(2)</label>
+			<nail x="-127" y="-595"/>
+			<nail x="-416" y="-595"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-628" y="-595">moveLeft(2)</label>
+			<nail x="-722" y="-595"/>
+			<nail x="-416" y="-595"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id1"/>
+			<label kind="guard" x="-628" y="-833">isJumpLeftLegal()</label>
+			<nail x="-416" y="-808"/>
+			<nail x="-722" y="-808"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-348" y="-833">isJumpRightLegal()</label>
+			<nail x="-416" y="-808"/>
+			<nail x="-127" y="-808"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-560" y="-689">isMoveLeftLegal()</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-399" y="-689">isMoveRightLegal()</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+// List one or more processes to be composed into a system.
+system Player;
+    </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; isGameComplete()
+			</formula>
+			<comment>
+			</comment>
+		</query>
+	</queries>
+</nta>
