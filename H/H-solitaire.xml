@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>// Place global declarations here.
+//int array_size := 7; //has to be an odd number
+//int array[array_size];
+//void fillArray() {
+//for (int i = 0, i &lt; array_size/2, i++) {
+//array[i] := 1;
+//}
+//}
+int board[7] := {1,1,1,0,2,2,2};
+int wantedState[7] := {2,2,2,0,1,1,1};</declaration><template><name x="5" y="5">move</name><declaration>// Place local declarations here.
+int i := 0;
+void swap(int a,int b) {
+	int tmp := a;
+	a = b;
+	b = tmp;
+}</declaration><location id="id0" x="-8" y="-80"></location><location id="id1" x="-8" y="256"></location><location id="id2" x="312" y="-168"></location><location id="id3" x="312" y="8"></location><location id="id4" x="240" y="-80"></location><location id="id5" x="-344" y="-168"></location><location id="id6" x="-344" y="0"></location><location id="id7" x="-256" y="-80"></location><location id="id8" x="-8" y="136"></location><init ref="id8"/><transition><source ref="id3"/><target ref="id8"/><label kind="assignment" x="92" y="72">i := 1</label></transition><transition><source ref="id6"/><target ref="id8"/><label kind="assignment" x="-236" y="68">i := 0</label></transition><transition><source ref="id2"/><target ref="id3"/><label kind="assignment" x="320" y="-96">swap(board[i],board[i+2])</label></transition><transition><source ref="id0"/><target ref="id2"/><label kind="guard" x="-136" y="-152">board[i] == 0 &amp;&amp; board[i+1] == 1 &amp;&amp; board[i+2] == 2</label></transition><transition><source ref="id0"/><target ref="id4"/><label kind="guard" x="8" y="-80">board[i] == 0 &amp;&amp; board[i+1] == 2</label></transition><transition><source ref="id5"/><target ref="id6"/><label kind="assignment" x="-520" y="-112">swap(board[i],board[i-2])</label></transition><transition><source ref="id0"/><target ref="id5"/><label kind="guard" x="-304" y="-184">board[i] == 0 &amp;&amp; board[i-1] == 2 &amp;&amp; board[i-2] == 1</label></transition><transition><source ref="id0"/><target ref="id7"/><label kind="guard" x="-224" y="-80">board[i] == 0 &amp;&amp; board[i-1] == 1</label></transition><transition><source ref="id8"/><target ref="id0"/><label kind="guard" x="-96" y="40">board[i] == 0</label></transition><transition><source ref="id1"/><target ref="id8"/><label kind="assignment" x="40" y="208">i++</label><nail x="48" y="192"/></transition><transition><source ref="id8"/><target ref="id1"/><label kind="guard" x="-128" y="200">board[i] != 0</label><nail x="-64" y="192"/></transition><transition><source ref="id4"/><target ref="id3"/><label kind="assignment" x="120" y="-32">swap(board[i],board[i+1])</label></transition><transition><source ref="id7"/><target ref="id6"/><label kind="assignment" x="-304" y="-32">swap(board[i],board[i-1])</label></transition></template><system>// Place template instantiations here.
+play = move();
+
+// List one or more processes to be composed into a system.
+system play;</system></nta>
