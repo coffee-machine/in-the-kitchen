@@ -2,17 +2,27 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
 	<declaration>// Place global declarations here.
-const int NORTH := 1;
-const int EAST := 2;
-const int SOUTH := 3;
-const int WEST := 4;
+const int NORTH := 0;
+const int EAST := 1;
+const int SOUTH := 2;
+const int WEST := 3;
 
-int direction := 1;
+int direction := 0;
 
 int x := 0; // x coordinate
 int y := 0; // y coordinate
 
 bool robotPosition[3][3] := {{1,0,0},{0,0,0},{0,0,0}};
+
+int ruleBook[3][3][4];
+
+// Initialize the rulebook matrix.
+void initRuleBook() {
+    ruleBook[0][0][0] := 2;
+    ruleBook[0][1][0] := 2;
+    ruleBook[0][2][0] := 1;
+    ruleBook[0][2][1] := 2;
+}
 
 bool checkStartPosition() {
     return (robotPosition[0][0]);
@@ -38,7 +48,20 @@ bool isFacingWall() {
 
 // ONLY USED FOR QUERY.
 // ROBOT DOES NOT USE THIS ARRAY.
-int visited[3][3] = {{1,0,0},{0,0,0},{0,0,0}};
+bool visited[3][3] = {{1,0,0},{0,0,0},{0,0,0}};
+
+int ruleToFollow := 0;
+
+void getRule() {
+    ruleToFollow := ruleBook[x][y][direction];
+}
+
+bool doesRuleExist() {
+    if (ruleBook[x][y][direction] != 0) {
+        return true;
+    }
+    return false;
+}
 
 void updateRobotPosition() {
     bool updatedRobotPosition[3][3] := {{0,0,0},{0,0,0},{0,0,0}};
@@ -48,6 +71,7 @@ void updateRobotPosition() {
 }
 
 void moveForward() {
+    ruleBook[x][y][direction] := 2;
     if (direction == NORTH) {
         y++;
     }
@@ -64,10 +88,20 @@ void moveForward() {
 }
 
 void turn() {
-    if (direction &lt; 4) {
+    ruleBook[x][y][direction] := 1;
+    if (direction &lt; 3) {
         direction++;
     } else {
-        direction := 1;
+        direction := 0;
+    }
+}
+
+void executeRule() {
+    if (ruleToFollow == 1) {
+        turn();
+    }
+    if (ruleToFollow == 2) {
+        moveForward();
     }
 }
 
@@ -75,55 +109,87 @@ void turn() {
 	<template>
 		<name x="5" y="5">Robot</name>
 		<declaration>// Place local declarations here.</declaration>
-		<location id="id0" x="-1819" y="-765">
-			<name x="-1829" y="-799">RobotHasTurned</name>
+		<location id="id0" x="-1895" y="-569">
+			<name x="-1878" y="-578">RuleRead</name>
 		</location>
-		<location id="id1" x="-1606" y="-926">
-			<name x="-1657" y="-960">RobotHasMoved</name>
+		<location id="id1" x="-2380" y="-586">
 		</location>
-		<location id="id2" x="-1606" y="-765">
-			<name x="-1589" y="-790">RobotFacesNoWall</name>
-			<label kind="comments" x="-1589" y="-765">Robot can move 
+		<location id="id2" x="-2014" y="-518">
+			<name x="-2048" y="-501">RuleExists</name>
+		</location>
+		<location id="id3" x="-2014" y="-636">
+		</location>
+		<location id="id4" x="-2227" y="-841">
+			<name x="-2237" y="-875">RobotHasTurned</name>
+		</location>
+		<location id="id5" x="-2014" y="-969">
+			<name x="-2065" y="-1003">RobotHasMoved</name>
+		</location>
+		<location id="id6" x="-2014" y="-841">
+			<name x="-1997" y="-866">RobotFacesNoWall</name>
+			<label kind="comments" x="-1997" y="-841">Robot can move 
 forward or turn</label>
 		</location>
-		<location id="id3" x="-1606" y="-637">
-			<name x="-1632" y="-620">Decides</name>
+		<location id="id7" x="-2014" y="-713">
+			<name x="-1997" y="-721">NewDecision</name>
 		</location>
-		<init ref="id3"/>
+		<init ref="id1"/>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id3"/>
-			<label kind="comments" x="-1963" y="-629">Robot is ready for 
-a new decision</label>
-			<nail x="-1819" y="-637"/>
-		</transition>
-		<transition>
-			<source ref="id3"/>
-			<target ref="id0"/>
-			<label kind="assignment" x="-1734" y="-688">turn()</label>
+			<label kind="assignment" x="-1946" y="-620">executeRule()</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id0"/>
-			<label kind="assignment" x="-1734" y="-756">turn()</label>
+			<label kind="assignment" x="-1963" y="-544">getRule()</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id3"/>
-			<label kind="comments" x="-1402" y="-968">Robot is ready for 
-a new decision</label>
-			<nail x="-1411" y="-926"/>
-			<nail x="-1411" y="-637"/>
-		</transition>
-		<transition>
-			<source ref="id2"/>
-			<target ref="id1"/>
-			<label kind="assignment" x="-1598" y="-858">moveForward()</label>
+			<label kind="assignment" x="-2295" y="-595">initRuleBook()</label>
 		</transition>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id2"/>
-			<label kind="guard" x="-1589" y="-705">!isFacingWall()</label>
+			<label kind="guard" x="-2125" y="-595">doesRuleExist()</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<nail x="-2226" y="-636"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id3"/>
+			<label kind="comments" x="-1784" y="-933">...and we start again</label>
+			<nail x="-1801" y="-968"/>
+			<nail x="-1801" y="-636"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-2005" y="-678">!doesRuleExist()</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-2142" y="-764">turn()</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-2142" y="-832">turn()</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-2006" y="-918">moveForward()</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-2005" y="-772">!isFacingWall()</label>
 		</transition>
 	</template>
 	<system>// Place template instantiations here.
@@ -132,9 +198,9 @@ system Robot;
     </system>
 	<queries>
 		<query>
-			<formula>E&lt;&gt; x == 0 &amp;&amp; y == 0 &amp;&amp; visited[2][2]
+			<formula>E&lt;&gt; x == 0 &amp;&amp; y == 0 &amp;&amp; direction == 1 &amp;&amp; visited[2][2]
 			</formula>
-			<comment>Does there exist a computation where the robot, having been once at (2,2) will go back to (0,0)? 
+			<comment>Does there exist a computation where the robot, having been once at (2,2) will go back to (0,0)?
 			</comment>
 		</query>
 		<query>
@@ -144,7 +210,7 @@ system Robot;
 			</comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; x == 0 &amp;&amp; y == 0 &amp;&amp; (1 == visited[1][0] == visited[2][0] == visited[0][1] == visited[1][1] == visited[2][1] == visited[0][2] == visited[1][2] == visited[2][2])
+			<formula>E&lt;&gt; x == 0 &amp;&amp; y == 0 &amp;&amp; (1 == visited[1][0] &amp;&amp; 1 == visited[2][0] &amp;&amp; 1 == visited[0][1] &amp;&amp; 1 == visited[1][1] &amp;&amp; 1 == visited[2][1] &amp;&amp; 1 == visited[0][2] &amp;&amp; 1 == visited[1][2] &amp;&amp; 1 == visited[2][2])
 			</formula>
 			<comment>Does there exist a computation where the robot, having visited every square will go back to (0,0)?
 			</comment>

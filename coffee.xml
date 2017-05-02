@@ -2,8 +2,7 @@
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
 	<declaration>// Place global declarations here.
-chan coffee, coin;
-urgent chan publish;</declaration>
+urgent chan publish, coffee, coin;</declaration>
 	<template>
 		<name x="5" y="5">Person</name>
 		<declaration>// Place local declarations here.
@@ -134,7 +133,7 @@ system Person, CoffeeMachine, Observer;
     </system>
 	<queries>
 		<query>
-			<formula>E&lt;&gt; !Observer.SAD
+			<formula>A[] !Observer.SAD
 			</formula>
 			<comment>
 			</comment>
