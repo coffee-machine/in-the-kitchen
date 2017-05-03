@@ -135,7 +135,7 @@ void executeRule() {
 		<location id="id3" x="-2014" y="-636">
 		</location>
 		<location id="id4" x="-2337" y="-969">
-			<name x="-2422" y="-944">RobotHasTurned</name>
+			<name x="-2473" y="-977">RobotHasTurned</name>
 		</location>
 		<location id="id5" x="-2014" y="-969">
 			<name x="-2006" y="-994">RobotHasMoved</name>
